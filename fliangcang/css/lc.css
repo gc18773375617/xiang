@@ -1,0 +1,11 @@
+.leiin{border: 0;border-radius: 4px;padding-left: 5px;}
+.leibt{color: white;background: black;border-radius: 4px;border: 0;}
+.goodlist ul li{box-sizing: border-box;overflow: hidden;cursor: pointer;position: relative;}
+.goodlist ul li img{border: 0;}
+.goodlist ul li:hover{border:1px solid saddlebrown;}
+.goodlist ul li p{text-align: center;font-size: 18px;font-weight: 700;margin-top: 5px;}
+.goodlist ul li b{float: left;margin-left: 10px;font-size: 20px ;color: orangered;line-height: 40px;}
+.goodlist div i{background: rgba(0,0,0,0.8);color: white;overflow: hidden;height: 36px;}
+.goodlist div{height:60px;position: absolute;bottom: 15px;}
+
+

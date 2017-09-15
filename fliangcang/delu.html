@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>用户登录良仓</title>
+		<link rel="stylesheet" type="text/css" href="css/delu.css"/>
+	</head>
+	<body>
+		<div class="t_form">
+			<form>
+				<div class="logo">
+					<a href="#"></a>
+				</div>
+					<div class="enter down">
+						<div class="moble">
+							<i></i>
+							<input type="text" name="username" placeholder="用户登录">
+							<span id="identify"></span>
+						</div>
+					</div>
+						<div class="enter">
+							<div class="check">
+								<i></i>
+								<input type="password" name="password" placeholder="请输入6-18位数的密码">
+							</div>
+						</div>
+				<div class="enter"><input type="checkbox" checked=""><span>自动登录</span></div>
+				<div class="enter login"><a href="#" id="register">登录</a></div>
+				<div class="enter"><a href="#" class="method">更多登录方式></a></div>
+			</form>
+		</div>
+	</body>
+	<script type="text/javascript" src="js/myajax.js">
+		
+	</script>
+		<script >
+			var Oinputs=document.querySelector("input[type=text]");
+			var Oinput=document.querySelector("input[type=password]");
+			var oregister=document.querySelector("#register");
+			oregister.onclick=function(){
+				myajax.post("http://h6.duchengjiu.top/shop/api_user.php",{
+					status:"login",
+					username:Oinputs.value,
+					password:Oinput.value
+				},function(err,responseText){
+					var json=JSON.parse(responseText);
+					var data = json.data;
+					localStorage.token=data.token;
+					localStorage.username=data.username;
+					if (json.code==0) {
+						alert("登录成功点击确认后3秒后跳转至首页")
+						setTimeout(function () {
+							location.href="index.html"
+						},3000)
+					}else{
+						alert(json.message)
+					}
+//					var ospan=document.getElementById("identify");
+//					ospan.innerHTML=`${json.message}`;
+					
+				});
+			}		
+		</script>
+</html>

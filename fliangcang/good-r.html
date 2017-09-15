@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/liangcang.css"/>
+		<link rel="stylesheet" type="text/css" href="css/lc.css"/>
+		<link rel="stylesheet" type="text/css" href="css/xq.css"/>
+	</head>
+	<body>
+		<div class="nav">
+			<div class="nav-c">
+				<div class="logo">
+					
+				</div>
+				<div class="nav-r">
+					<ul>
+						
+						<li  class="login-no"><a href="delu.html">登录</a><a href="login.html">注册</a></li>
+						<li class="login-in"><a style="float: left"; class="username"></a><a class="exit">退出</a></li>
+						<li><a href="cart.html">购物车</a></li><li style="border:0;"><a href="order.html">查看订单</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="lei">
+			<ul>
+			</ul>
+			<input class="leiin" type="text" name="" id="" value=""placeholder="请输入要搜索的商品" />
+			<input class="leibt" type="button" name="" id="" value="搜索"/>
+		</div>
+		<div class="good-nav">
+			<p>商品详情</p>
+		</div>
+		<div class="good-x">
+			<div class="big" ></div>
+			<input class="plus" type="button"  value="添加至购物车" />
+		</div>
+		<div class="footer">
+			<a href="#"><p class="hand"></p></a>
+			<div class="slogen">
+				<dl class="fore1">
+					<dt></dt>
+					<dd>
+						<p class="chinesetop">全球精品</p>
+						<p class="english">Global Selections</p>
+					</dd>
+				</dl>
+				<dl class="fore2">
+					<dt></dt>
+					<dd>
+						<p class="chinesetop">正品保证</p>
+						<p class="english">Authenticity Guaranteed</p>
+					</dd>
+				</dl>
+				<dl class="fore3">
+					<dt></dt>
+					<dd>
+						<p class="chinesetop">全场包邮</p>
+						<p class="english">Free Delivery</p>
+					</dd>
+				</dl>
+				<dl class="fore4">  
+					<dt></dt>
+					<dd>
+						<p class="chinesetop">chinesetop phonehm</p>
+						<p class="english">工作日 09:00-18:00</p>
+					</dd>
+				</dl>
+			</div>
+			<div class="footer_last">
+				<div class="footer_left">
+					<div class="download">
+						<p class="phone">iPhone Android</p>
+						<p class="newlefont">客户端下载</p>
+					</div>
+					<p>© 2013-2015 北京良仓文化传播有限公司版权所有 京ICP备13010677号-1 京公网安备11010502025627</p>
+					<p>公司名称：北京良仓文化传播有限公司  电话：010-58263516</p>
+					<p>公司地址：北京朝阳区百子湾路32号6号楼1层60号.</p>
+					<p>社会信用统一代码：91110105059231575L  食品许可证：JY11105160159557  </p>
+					<p>图书证名称：中华人民共和国出版物经营许可证  图书证编号：新出发京零 字第 朝 150051 号</p>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript"src="js/myajax.js"></script>
+	<script type="text/javascript">
+		function getalltop(obj){
+			var alltop = obj.offsetTop;
+			var nobj = obj;
+			while (nobj = nobj.offsetParent){
+				alltop+=nobj.offsetTop;
+			}
+			return alltop
+		}
+	</script>
+	<script type="text/javascript">
+		var goods_id = getstring("goods_id");
+		var oxx = document.querySelector(".good-x")
+		myajax.get("http://h6.duchengjiu.top/shop/api_goods.php?goods_id="+goods_id,{},function (err,retext) {
+			var json = JSON.parse(retext)
+			var data = json.data;
+			oxx.innerHTML+=`<div class="small"><div class="small-m" ></div><img src="${data[0].goods_thumb}" /></div>
+			<h3>${data[0].goods_name}</h3>
+			<p>${data[0].goods_desc}</p>
+			<h4>¥${data[0].price}</h4>
+			`
+			var oplus = document.querySelector(".plus");
+			var odiv = document.querySelector(".small");
+			var osmall = document.querySelector(".small-m");
+			var obig = document.querySelector(".big")
+			odiv.onmousemove = function (event) {
+				obig.style.display="block"
+				osmall.style.display="block"
+				obig.style.background="url("+data[0].goods_thumb+")no-repeat"
+				obig.style.backgroundPositionY=-parseInt(osmall.style.top)*1.3+"px"
+				obig.style.backgroundPositionX=-parseInt(osmall.style.left)*1.3+"px"
+				osmall.style.top=(event.clientY-oxx.offsetTop)-75+"px";
+				osmall.style.left=(event.clientX-oxx.offsetLeft)-75+"px"
+				if (parseInt(osmall.style.left)<=0) {
+					osmall.style.left=0+"px"
+					
+				}
+				if (parseInt(osmall.style.top)<=0) {
+					osmall.style.top=0+"px"
+					
+				}
+				if (parseInt(osmall.style.left)>=150) {
+					osmall.style.left=150+"px"
+				}
+				
+				if (parseInt(osmall.style.top)>=150) {
+					osmall.style.top=150+"px"
+				}
+			}
+			odiv.onmouseleave = function () {
+				obig.style.display="none"
+				osmall.style.display="none"
+			}
+			oplus.onclick = function () {
+				myajax.post("http://h6.duchengjiu.top/shop/api_cart.php?token="+localStorage.token,{
+					goods_id:goods_id,
+					number:1,
+				},function (err,retext) {
+					var json = JSON.parse(retext);
+					if (localStorage.token=="null"||localStorage.token=="undefine") {
+						alert("请先登录");
+						location.href="delu.html"
+						return;
+					}
+					if (json.code==0) {
+						alert("添加购物车成功")
+					}else{
+						alert("不支持重复添加要批发请去购物车选择数量")
+					}
+				})
+		}
+		})
+	</script>
+	<script type="text/javascript">
+		var olei = document.querySelector(".lei ul")
+		myajax.get("http://h6.duchengjiu.top/shop/api_cat.php",{},function (err,retext) {
+			var json = JSON.parse(retext);
+			var data = json.data;
+			for (i=0;i<data.length;i++) {
+				olei.innerHTML+=`<li><a href="good-list.html?cat_id=${data[i].cat_id}">${data[i].cat_name}</a></li>`
+			}
+		})
+	</script>
+	<script type="text/javascript">
+		var oleiin = document.querySelector(".leiin")
+		var oleibt = document.querySelector(".leibt")
+		oleibt.onclick = function () {
+			location.href="search.html?search_text="+oleiin.value
+		}
+ 	</script>
+ 	<script type="text/javascript">
+ 		var ologin = document.querySelector(".login-in")
+ 		var ousername = document.querySelector(".username")
+ 		var ologinn = document.querySelector(".login-no")
+ 		var oexit = document.querySelector(".exit")
+ 		oexit.onclick = function () {
+ 			localStorage.token=null;
+ 			localStorage.username=null;
+ 			location.href="index.html"
+ 		}
+ 		if (localStorage.username!="null"&&localStorage.username!="undefinde") {
+ 			ousername.innerText=localStorage.username;
+ 			ologinn.style.display="none"
+ 			ologin.style.display="block"
+ 		}else{
+ 			ologinn.style.display="block"
+ 			ologin.style.display="display"
+ 		}
+ 	</script>
+ 	<script type="text/javascript">
+	</script>
+</html>

@@ -1,0 +1,99 @@
+.bd{
+				width: 400px;
+				margin: 0 auto;
+			}
+			.people input{
+				width: 175px;
+				height: 20px;
+				margin-bottom: 10px;
+				margin-top: 10px;
+			}
+			.people span{
+				letter-spacing: 4px;
+			}
+			em{
+				color: red;
+				margin-right: 5px;
+			}
+			.provinces select{
+				width: 77px;
+				margin-bottom: 10px;
+				
+			}
+			.address_list input{
+				width: 396px;
+				height: 20px;
+				margin-top: 10px;
+			}
+			.Email input{
+				width: 65px;
+				height:20px;
+				margin-top: 10px;
+			}
+			.Email span{
+				letter-spacing: 11px;
+			}
+			.mobile input{
+				width:105px;
+				height: 20px;
+				margin-top: 10px;
+			}
+			.mobile span{
+				letter-spacing: 4px;
+			}
+			.btn{
+				display: block;
+				text-align: center;
+				margin-bottom: 10px;
+				margin-top: 10px;
+			}
+			.add{
+				width: 45px;
+				height: 25px;
+				
+			}
+			.address-ul {
+				overflow: hidden;
+				height: 130px;
+			}
+			.address-ul li {
+				width: 250px;
+				height: 120px;
+				overflow: hidden;
+				border: 1px solid #e4e4e4;
+				padding: 10px;
+				background-color: #ccc;
+				line-height: 150%;
+				cursor: pointer;
+				box-sizing: border-box;
+			}
+			.address-ul li.selected {
+				border: 1px solid rgb(37,41,36);
+			}
+			.delete {
+				float: right;
+				padding-left: 5px;
+				padding-right: 5px;
+				border-radius: 5px;
+				background-color: rgb(37,41,36);
+				color: white;
+				cursor: pointer;
+			}
+			.delete:hover {
+				background-color: white;
+				color: rgb(37,41,36);
+			}
+			.show-all-address {
+				clear: both;
+				width: 100px;
+				text-align: center;
+				margin-top: 10px;
+				padding: 5px;
+				cursor: pointer;
+				background-color: rgb(37,41,36);
+				color: white;
+			}
+			.show-all-address:hover {
+				background-color: white;
+				color: rgb(37,41,36);
+			}

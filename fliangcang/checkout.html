@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+	<link rel="stylesheet" href="liangcang/css/reset.css">
+	<link rel="stylesheet" href="liangcang/css/modal.css">
+		<link rel="stylesheet" type="text/css" href="liangcang/css/liangcang.css"/>
+		<link rel="stylesheet" type="text/css" href="css/liangcang.css"/>
+  		<link rel="stylesheet" type="text/css" href="css/lc.css"/>
+  		<link rel="stylesheet" type="text/css" href="css/address.css"/>
+  		
+  		
+  
+</head>
+<body>
+	<div class="nav">
+			<div class="nav-c">
+				<div class="logo">
+				</div>
+				<div class="nav-r">
+					<ul>
+						
+						<li class="login-no"><a href="delu.html">登录</a><a href="login.html">注册</a></li>
+						<li class="login-in"><a style="float: left"; class="Username"></a><a class="exit">退出</a></li>
+						<li><a href="cart.html">购物车</a></li><li style="border: 0;"><a href="order.html">查看订单</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="lei">
+			<ul>
+			</ul>
+			<input class="leiin" type="text" name="" id="" value=""placeholder="请输入要搜索的商品" />
+			<input class="leibt" type="button" name="" id="" value="搜索"/>
+		</div>
+		<script type="text/javascript"src="js/myajax.js"></script>
+	<script type="text/javascript"> 
+		var olei = document.querySelector(".lei ul")
+		myajax.get("http://h6.duchengjiu.top/shop/api_cat.php",{},function (err,retext) {
+			var json = JSON.parse(retext);
+			var data = json.data;
+			for (i=0;i<data.length;i++) {
+				olei.innerHTML+=`<li><a href="good-list.html?cat_id=${data[i].cat_id}">${data[i].cat_name}</a></li>`
+			}
+		})
+	</script>
+
+	<main>
+	收货地址:
+		<input type="button" class="add-address" id="add-address" value="添加收货地址" />
+		<div class="address">
+			<div>
+				<ul class="address-ul">
+				</ul>
+			</div>
+			<div class="show-all-address">显示全部地址</div>
+			<script src="liangcang/js/animate.js" charset="utf-8"></script>
+			<script>
+				var oShowAllAddress = document.querySelector('.show-all-address');
+						oShowAllAddress.addEventListener('click', function(){
+				var oAddressUl = document.querySelector('.address-ul');
+				var overflow = fetchComputedStyle(oAddressUl, 'overflow');
+				var flag = overflow === 'hidden' ? false : true;
+						oAddressUl.style.overflow = !flag ? 'visible' : 'hidden';
+				this.innerText = flag ? '显示全部地址' : '隐藏地址';
+				});
+			</script>
+			</div>
+			<script>
+			//ajax读取到收货地址并显示
+			function showAddress() {
+				myajax.get('http://h6.duchengjiu.top/shop/api_useraddress.php',
+				{token: localStorage.token},
+			function(error, responseText) {
+				var json = JSON.parse(responseText);
+						console.log(json);
+				var data = json.data;
+				var oAddressUl = document.querySelector('.address-ul');
+						if (data.length === 0) {
+								oAddressUl.innerHTML = '<h2>您还没有收货地址，请点击添加收货地址</h2>';
+						return;
+						}
+						oAddressUl.innerHTML = '';
+				for (var i = data.length - 1; i >= 0; i--) {
+						var obj = data[i];
+						oAddressUl.innerHTML += `
+															<li data-id="${obj.address_id}">
+															<span>收货人：${obj.consignee}</span><span name="delete" class="delete" data-id="${obj.address_id}">X</span><br />
+															<span>手机：${obj.mobile}</span><br />
+															<span>地址：${obj.address}</span>
+															</li>
+						`;
+					}
+				})
+			}
+			showAddress();
+			var selected_address_id = 0;//如果这个值为0，无法下订单，当点击一个收货地址时，给这个变量赋值
+			//给收货地址添加一个事件代理
+			var oAddressUl = document.querySelector('.address-ul');
+				oAddressUl.onclick = function(event) {
+				event = event || window.event;
+			var target = event.target || event.srcElement;
+				console.log(target.nodeName);
+				if (target.className === 'delete') {
+				if (!confirm('确认要删除收货地址吗？')) {
+					return;
+				}
+				var address_id = target.dataset.id;
+						console.log(address_id);
+				myajax.get('http://h6.duchengjiu.top/shop/api_useraddress.php',
+				{status: 'delete', address_id, token: localStorage.token}, function(error, responseText){
+				var json = JSON.parse(responseText);
+					if (json.code === 0) {
+						target.parentNode.parentNode.removeChild(target.parentNode);
+						}
+					})
+				} else {
+				//先让所有li元素的样式清空
+				var oAddressLis = oAddressUl.querySelectorAll('li');
+					for (var i = 0; i < oAddressLis.length; i++) {
+								oAddressLis[i].classList.remove('selected');
+					}
+					if (target.nodeName === 'LI') {
+					//点击LI元素选择一个收货地址
+						selected_address_id = parseInt(target.dataset.id);
+						target.classList.add('selected');
+					} else if (target.nodeName === 'SPAN'){
+							selected_address_id = parseInt(target.parentNode.dataset.id);
+							target.parentNode.classList.add('selected');
+					}
+				}
+			}
+		</script>
+
+		<div id="order">下订单</div>
+		<script>
+			var oOrder = document.querySelector('#order');
+				oOrder.onclick = function() {
+					var address_id = selected_address_id;
+					if (address_id === 0) {
+					alert('请选择一个收货地址');
+					return;
+				}
+				var total_prices = localStorage.sum;
+				console.log(address_id)
+				myajax.post('http://h6.duchengjiu.top/shop/api_order.php?token='+localStorage.token+'&status=add', {address_id, total_prices}, function(err, retext){
+						var json = JSON.parse(retext)
+//						console.log(json)
+				if (json.code === 0) {
+						alert('下订单成功');
+						location.href = 'order.html';
+					}
+				});
+			}
+	</script>
+	</main>
+
+		<div class="modal register">
+		<div class="container">
+			<div class="hd">添加收货地址<span class="close">X</span></div>
+			<div class="bd">
+				<div class="people">
+					<span><em>*</em>收货人：</span><input type="text" name="consignee" value="张三">
+				</div>
+				<div class="provinces">
+					<span><em>*</em>所在地区：</span>
+					<select name="province">
+						<option value="新疆">新疆</option>
+						<option value="甘肃">甘肃</option>
+						<option value="陕西">陕西</option>
+						<option value="青海">青海</option>
+						<option value="河南">河南</option>
+						<option value="河北">河北</option>
+						<option value="四川">四川</option>
+						<option value="湖南">湖南</option>
+						<option value="湖北">湖北</option>
+						<option value="广州">广州</option>
+						<option value="福建">福建</option>
+						<option value="辽宁">辽宁</option>
+					</select>
+					<span>省</span>
+					<select name="city" >
+						<option value="乌鲁木齐">乌鲁木齐</option>
+						<option value="兰州">兰州</option>
+						<option value="西安">西安</option>
+						<option value="西宁">西宁</option>
+						<option value="郑州">郑州</option>
+						<option value="保定">保定</option>
+						<option value="成都">成都</option>
+						<option value="长沙">长沙</option>
+						<option value="武汉">武汉</option>
+						<option value="广东">广东</option>
+						<option value="福州">福州</option>
+						<option value="沈阳">沈阳</option>
+					</select>
+					<span>市</span>
+					<select name="district" >
+						<option value="沙依巴克">沙依巴克</option>
+						<option value="红古">红古</option>
+						<option value="新城">新城</option>
+						<option value="城东">城东</option>
+						<option value="二七">二七</option>
+						<option value="新市">新市</option>
+						<option value="成都">成都</option>
+						<option value="天心">天心</option>
+						<option value="武昌">武昌</option>
+						<option value="天河">天河</option>
+						<option value="台江">台江</option>
+						<option value="新民">新民</option>
+					</select>
+					<span>区</span>
+				</div>
+				<div class="address_list">
+					<span><em>*</em>详细地址：</span><input type="text" name="address" value="实兴东街11号朗诚大厦南楼二层">
+				</div>
+				<div class="Email">
+					<span><em>*</em>邮箱：</span><input type="text" name="zip_code" value="83100">
+				</div>
+				<div class="mobile">
+					<span><em>*</em>手机号：</span><input type="text" name="mobile" value="18518368050">
+					<span><em>*</em>电话：</span><input type="text" name="tel" value="010-91519281">
+				</div>
+					<div class="btn">
+						<input type="button" value="保存" class="add">
+					</div>
+			</div>
+	</div>
+	</div>
+	<script src="liangcang/js/modal.js" charset="utf-8"></script>
+	<script>
+		var modal = new Modal('#add-address');
+		//给添加按钮添加事件
+		var oAdd = document.querySelector('.add');
+				oAdd.onclick = function() {
+		var oConsignee = document.querySelector('input[name=consignee]')
+				oConsignee=oConsignee.value;
+		var oProvince = document.querySelector('select[name=province]')
+				oProvince=oProvince.value
+		var oCity = document.querySelector('select[name=city]')
+				oCity=oCity.value
+		var oDistrict = document.querySelector('select[name=district]')
+				oDistrict=oDistrict.value
+		var oAddress = document.querySelector('input[name=address]')
+				oAddress=oAddress.value
+		var oZip_code = document.querySelector('input[name=zip_code]')
+				oZip_code=oZip_code.value
+		var oMobile = document.querySelector('input[name=mobile]')
+				oMobile=oMobile.value
+		var oTel = document.querySelector('input[name=tel]')
+				oTel=oTel.value
+		var postobj = document.getElementsByClassName('.consignee');
+		myajax.post('http://h6.duchengjiu.top/shop/api_useraddress.php?status=add&token='+localStorage.token,{
+				consignee:oConsignee,
+				province:oProvince,
+				city:oCity,
+				district:oDistrict,
+				address:oAddress,
+				zip_code:oZip_code,
+				mobile:oMobile,
+				tel:oTel,
+		}, function(err, responseText){
+			var json = JSON.parse(responseText);
+				console.log(json);
+				console.log(localStorage.token)
+			if (json.code === 0) {
+					modal.hide();
+					showAddress();
+				}
+			});
+		}
+	</script>
+		<script type="text/javascript">
+ 		var ologin = document.querySelector(".login-in")
+ 		var ousername = document.querySelector(".Username")
+ 		var ologinn = document.querySelector(".login-no")
+ 		var oexit = document.querySelector(".exit")
+ 		oexit.onclick = function () {
+ 			localStorage.token=null;
+ 			localStorage.username=null;
+ 			location.href="index.html"
+ 		}
+ 		if (localStorage.username!="null"&&localStorage.username!="undefinde") {
+ 			ousername.innerText=localStorage.username;
+ 			ologinn.style.display="none"
+ 			ologin.style.display="block"
+ 		}else{
+ 			ologinn.style.display="block"
+ 			ologin.style.display="display"
+ 		}
+ 	</script>
+ 	<script type="text/javascript">
+		var oleiin = document.querySelector(".leiin")
+		var oleibt = document.querySelector(".leibt")
+		oleibt.onclick = function () {
+			location.href="search.html?search_text="+oleiin.value
+		}
+ 	</script>
+ 	<div class="footer">
+			<a href="#"><p class="hand"></p></a>
+			<div class="slogen">
+				<dl class="fore1">
+					<dt></dt>
+					<dd>
+						<p class="chinesetop">全球精品</p>
+						<p class="english">Global Selections</p>
+					</dd>
+				</dl>
+				<dl class="fore2">
+					<dt></dt>
+					<dd>
+						<p class="chinesetop">正品保证</p>
+						<p class="english">Authenticity Guaranteed</p>
+					</dd>
+				</dl>
+				<dl class="fore3">
+					<dt></dt>
+					<dd>
+						<p class="chinesetop">全场包邮</p>
+						<p class="english">Free Delivery</p>
+					</dd>
+				</dl>
+				<dl class="fore4">  
+					<dt></dt>
+					<dd>
+						<p class="chinesetop">chinesetop phonehm</p>
+						<p class="english">工作日 09:00-18:00</p>
+					</dd>
+				</dl>
+			</div>
+			<div class="footer_last">
+				<div class="footer_left">
+					<div class="download">
+						<p class="phone">iPhone Android</p>
+						<p class="newlefont">客户端下载</p>
+					</div>
+					<p>© 2013-2015 北京良仓文化传播有限公司版权所有 京ICP备13010677号-1 京公网安备11010502025627</p>
+					<p>公司名称：北京良仓文化传播有限公司  电话：010-58263516</p>
+					<p>公司地址：北京朝阳区百子湾路32号6号楼1层60号.</p>
+					<p>社会信用统一代码：91110105059231575L  食品许可证：JY11105160159557  </p>
+					<p>图书证名称：中华人民共和国出版物经营许可证  图书证编号：新出发京零 字第 朝 150051 号</p>
+				</div>
+			</div>
+		</div>
+</body>
+</html>

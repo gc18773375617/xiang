@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/liangcang.css"/>
+		<link rel="stylesheet" type="text/css" href="css/lc.css"/>
+		
+	</head>
+	<body>
+		<div class="nav">
+			<div class="nav-c">
+				<div class="logo">
+				</div>
+				<div class="nav-r">
+					<ul>
+						
+						<li class="login-no"><a href="delu.html">登录</a><a href="login.html">注册</a></li>
+						<li class="login-in"><a style="float: left";" class="username"></a><a class="exit">退出</a></li>
+						<li ><a href="">购物车</a></li><li style="border: 0;"><a href="order.html">查看订单</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="lei">
+			<ul>
+			</ul>
+			<input class="leiin" type="text" name="" id="" value=""placeholder="请输入要搜索的商品" />
+			<input class="leibt" type="button" name="" id="" value="搜索"/>
+		</div>
+		<div class="good-nav">
+			<p>购物车</p>
+		</div>
+		<table border="" cellspacing="0" cellpadding="0">
+		<tr>
+			<td>商品ID</td>
+			<td>商品名称</td>
+			<td>商品样式</td>
+			<td>商品数量</td>
+			<td>小计</td>
+			<td>操作</td>
+		</tr>
+	</table>
+	<div class="foot" ><h3>总价:</h3><h3 class="price" >0</h3><input type="button" class="ding" name="" id="" value="下订单" /></div>
+	<div class="footer">
+			<a href="#"><p class="hand"></p></a>
+			<div class="slogen">
+				<dl class="fore1">
+					<dt></dt>
+					<dd>
+						<p class="chinesetop">全球精品</p>
+						<p class="english">Global Selections</p>
+					</dd>
+				</dl>
+				<dl class="fore2">
+					<dt></dt>
+					<dd>
+						<p class="chinesetop">正品保证</p>
+						<p class="english">Authenticity Guaranteed</p>
+					</dd>
+				</dl>
+				<dl class="fore3">
+					<dt></dt>
+					<dd>
+						<p class="chinesetop">全场包邮</p>
+						<p class="english">Free Delivery</p>
+					</dd>
+				</dl>
+				<dl class="fore4">  
+					<dt></dt>
+					<dd>
+						<p class="chinesetop">chinesetop phonehm</p>
+						<p class="english">工作日 09:00-18:00</p>
+					</dd>
+				</dl>
+			</div>
+			<div class="footer_last">
+				<div class="footer_left">
+					<div class="download">
+						<p class="phone">iPhone Android</p>
+						<p class="newlefont">客户端下载</p>
+					</div>
+					<p>© 2013-2015 北京良仓文化传播有限公司版权所有 京ICP备13010677号-1 京公网安备11010502025627</p>
+					<p>公司名称：北京良仓文化传播有限公司  电话：010-58263516</p>
+					<p>公司地址：北京朝阳区百子湾路32号6号楼1层60号.</p>
+					<p>社会信用统一代码：91110105059231575L  食品许可证：JY11105160159557  </p>
+					<p>图书证名称：中华人民共和国出版物经营许可证  图书证编号：新出发京零 字第 朝 150051 号</p>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript"src="js/myajax.js"></script>
+	<script type="text/javascript">
+		var olei = document.querySelector(".lei ul")
+		myajax.get("http://h6.duchengjiu.top/shop/api_cat.php",{},function (err,retext) {
+			var json = JSON.parse(retext);
+			var data = json.data;
+			for (i=0;i<data.length;i++) {
+				olei.innerHTML+=`<li><a href="good-list.html?cat_id=${data[i].cat_id}">${data[i].cat_name}</a></li>`
+			}
+		})
+	</script>
+	<script type="text/javascript">
+ 		var ologin = document.querySelector(".login-in")
+ 		var ousername = document.querySelector(".username")
+ 		var ologinn = document.querySelector(".login-no")
+ 		var oexit = document.querySelector(".exit")
+ 		oexit.onclick = function () {
+ 			localStorage.token=null;
+ 			localStorage.username=null;
+ 			location.href="index.html"
+ 		}
+ 		if (localStorage.username!="null"&&localStorage.username!="undefinde") {
+ 			ousername.innerText=localStorage.username;
+ 			ologinn.style.display="none"
+ 			ologin.style.display="block"
+ 		}else{
+ 			ologinn.style.display="block"
+ 			ologin.style.display="display"
+ 		}
+ 	</script>
+ 	<script type="text/javascript">
+ 		var otable = document.querySelector("table")
+ 		myajax.get("http://h6.duchengjiu.top/shop/api_cart.php",{token:localStorage.token},function (err,retext) {
+ 			var json = JSON.parse(retext);
+ 			var data = json.data;
+ 			console.log(data);
+ 			for (i=0;i<data.length;i++) {
+ 				otable.innerHTML+=`<tr>
+ 			<td>${data[i].goods_id}</td>
+ 			<td>${data[i].goods_name}</td>
+ 			<td><img src="${data[i].goods_thumb}" /></td>
+ 			<td><button class="plusbt" >+</button><span>${data[i].goods_number}</span><button class="downbt" >-</button></td>
+ 			<td class="allprice" >¥${data[i].goods_price}</td>
+ 			<td><button data-pr="${data[i].goods_price}" class="del" data-id="${data[i].goods_id}" >删除</button></td>
+ 			<tr>`
+ 			}
+ 			var onplus = document.querySelectorAll(".plusbt")
+ 			var ondown = document.querySelectorAll(".downbt")
+ 			var oallp = document.querySelectorAll(".allprice")
+ 			var oprice = document.querySelector(".price")
+ 			var price=0;
+ 			var odel = document.querySelectorAll(".del")
+   			for (i=0;i<onplus.length;i++) {
+   				(function (i) {
+   					onplus[i].onclick = function (event) {
+   						event.target.parentNode.childNodes[1].innerText=parseInt(event.target.parentNode.childNodes[1].innerText)+1;
+   						myajax.post("http://h6.duchengjiu.top/shop/api_cart.php?token="+localStorage.token,{
+   							goods_id:data[i].goods_id,
+   							number:event.target.parentNode.childNodes[1].innerText
+   						},function (err,retext) {
+   							var json = JSON.parse(retext);
+   							console.log(json)
+   						})
+ 						event.target.parentNode.parentNode.childNodes[9].innerText="¥"+parseInt(data[i].goods_price)*event.target.parentNode.childNodes[1].innerText
+ 						var price=0;
+   						for(j=0;j<oallp.length;j++){
+   							price+=parseInt(oallp[j].innerText.substr(1))
+   						}
+   						oprice.innerText="¥"+price
+   				}
+   				odel[i].onclick = function () {
+   					if (!confirm("确定要删除该商品吗?")) {
+   						return;
+   					}
+   					console.log(odel[i].dataset.id)
+   					myajax.post("http://h6.duchengjiu.top/shop/api_cart.php?token="+localStorage.token,{goods_id:odel[i].dataset.id,number:0},function (err,retext){
+   						var json = JSON.parse(retext);
+   						console.log(json);
+   						var tr = odel[i].parentNode.parentNode;
+   						tr.parentNode.removeChild(tr);
+// 						location.href="cart.html"
+						oprice.innerText="¥"+(parseInt(oprice.innerText.substr(1))-parseInt(odel[i].dataset.pr))
+   					})
+   				}
+   				    ondown[i].onclick = function (event) {
+   				    	if (event.target.parentNode.childNodes[1].innerText==1) {
+   							event.target.parentNode.childNodes[1].innerText=1;
+   							return;
+   						}
+   					event.target.parentNode.childNodes[1].innerText=parseInt(event.target.parentNode.childNodes[1].innerText)-1;
+   					myajax.post("http://h6.duchengjiu.top/shop/api_cart.php?token="+localStorage.token,{
+   							goods_id:data[i].goods_id,
+   							number:event.target.parentNode.childNodes[1].innerText
+   						},function (err,retext) {
+   							var json = JSON.parse(retext);
+   							console.log(json)
+   						})
+   					event.target.parentNode.parentNode.childNodes[9].innerText="¥"+parseInt(data[i].goods_price)*event.target.parentNode.childNodes[1].innerText
+   					var price=0;
+   						for(j=0;j<oallp.length;j++){
+   							price+=parseInt(oallp[j].innerText.substr(1))
+   						}
+   						oprice.innerText="¥"+price
+   				}
+   				})(i)
+   				price+=parseInt(oallp[i].innerText.substr(1))
+   				
+   			}
+   			oprice.innerText="¥"+price
+   			localStorage.sum=price;
+   			console.log(localStorage.sum)
+ 		})
+ 	</script>
+ 	<script type="text/javascript">
+ 		var oding = document.querySelector(".ding")
+ 		oding.onclick = function () {
+ 			location.href = "checkout.html"
+ 		}
+ 	</script>
+</html>

@@ -1,0 +1,42 @@
+*{padding: 0;margin: 0;}
+li{list-style: none;}
+a{text-decoration: none;}
+.nav{width: 100%;height: 60px;background-color: rgb(37,41,46);}
+.nav-c{width: 1000px;height: 60px;margin: auto;overflow: hidden;}
+.logo{width: 95px;height: 45px;background: url(../img/icon.png);margin-top: 10px;float: left;}
+.nav-r{width: 160px;height: 40px;float: right;}
+.nav-r ul li {float: left;width: 80px;margin-top: 15px;}
+.nav-r ul li a {color: white;margin-left: 7px;cursor: pointer;}
+.lei{width: 1000px;height: 50px;margin: auto;}
+.lei ul li{float: left;margin-right: 45px;line-height: 50px;border-bottom: 2px solid transparent;}
+.lei ul li:hover{border-bottom: 2px solid black;}
+.lei ul li a{color: black;}
+.leiin{margin-top: 15px;}
+.leibt{margin-top: 15px;}
+.hot-goods{width: 1000px;height:900px;margin: auto;overflow: hidden;}
+.hot-goods ul li {width: 300px;height: 450px;float: left;margin-right:30px;}
+.hot-goods ul li i{display: block;}
+.hot-goods ul li img{width: 300px;}
+.more-k{width: 100px;margin: auto;}
+.more{width:100px;height:30px;margin:20px auto;}
+.goodlist{width: 1000px;height:900px;margin: auto;overflow: hidden;}
+.goodlist ul li {width: 300px;height: 450px;float: left;margin-right:30px;}
+.goodlist ul li i{display: block;}
+.goodlist ul li img{width: 300px;}
+.good-nav{width: 1000px;height: 40px;background-color: rgb(37,41,46);margin: auto;color: white;overflow: hidden;}
+.good-nav p{float: left;margin: 10px 0 0 10px;}
+.good-x{width: 1000px;height: 300px;margin: auto;border: 1px solid black;position: relative;}
+.good-x input{width: 100px;height: 60px; position: absolute;top: 230px;left: 300px; z-index: 99;}
+.good-x img {width: 300px;height: 300px;float: left;}
+.good-x h3{width: 700px;float: left;}
+.good-x p{width: 700px;float: left;margin-top:70px ;}
+.good-x h4{width: 700px;float: left;margin-top:70px;}
+.search{width: 1000px;margin: auto;}
+.search ul li {width: 300px;height: 450px;float: left;margin-right:30px;}
+.search ul li i{display: block;}
+.search ul li img{width: 300px;}
+.login-in{display: none;}
+table{width: 1000px;margin: auto;text-align: center;}
+table img{width: 100px;height: 100px;}
+#order{width: 70px;height: 30px;background-color:rgb(37,41,46);color: white;line-height: 30px;float: right;text-align: center;cursor: pointer;}
+.show-all-address{float:left;}
